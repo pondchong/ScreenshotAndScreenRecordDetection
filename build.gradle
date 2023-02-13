@@ -5,7 +5,7 @@ buildscript {
         targetSdkVersion = 30
         minSdkVersion = 16
 
-        versionName = '1.0.2'
+        versionName = '1.0.3'
         versionCode = 10002
 
         libraryName = 'Screenshot Detection'
