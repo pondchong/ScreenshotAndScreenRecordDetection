@@ -82,6 +82,13 @@ class ScreenshotDetectionDelegate(
                 true,
                 contentObserver
             )
+        activityReference.get()
+            ?.contentResolver
+            ?.registerContentObserver(
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                true,
+                contentObserver
+            )
         awaitClose {
             activityReference.get()
                 ?.contentResolver
@@ -92,9 +99,9 @@ class ScreenshotDetectionDelegate(
     private fun onContentChanged(context: Context, uri: Uri) {
         if (isReadExternalStoragePermissionGranted()) {
             val path = getFilePathFromContentResolver(context, uri)
-
+            Log.e("log path",path.toString())
             path?.let { p ->
-                if (isScreenshotPath(p)) {
+                if (isScreenshotPath(p) || isVideoPath(p)) {
                     onScreenCaptured(p)
                 }
             }
@@ -111,6 +118,17 @@ class ScreenshotDetectionDelegate(
         return (screenshotDirectory != null &&
                 lowercasePath?.contains(screenshotDirectory) == true) ||
                 lowercasePath?.contains("screenshot") == true
+    }
+
+    private fun isVideoPath(path: String?): Boolean {
+        val lowercasePath = path?.lowercase()
+        val videoDirectory = getPublicScreenshotDirectoryName()?.lowercase()
+        return (videoDirectory != null &&
+                lowercasePath?.contains(videoDirectory) == true) ||
+                lowercasePath?.contains("vid") == true ||
+                lowercasePath?.contains("screen record") == true ||
+                lowercasePath?.contains("screenrecord") == true ||
+                lowercasePath?.contains("screen_record") == true
     }
 
     @Suppress("DEPRECATION")
